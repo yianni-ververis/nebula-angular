@@ -12,9 +12,6 @@ const config = {
   host: 'sense-demo.qlik.com',
   appId: '133dab5d-8f56-4d40-b3e0-a6b401391bde',
   webIntegrationId: null,
-  // host: 'incognito.us.qlikcloud.com',
-  // webIntegrationId: 'jUMqi2hs30peNvVKG4Grd2MI_LdpcpdR',
-  // appId: 'eb963d57-f33b-4298-9a04-97903b76201d',
 };
 
 const n = embed.createConfiguration({
