@@ -2,6 +2,8 @@
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 10.2.0.
 
+Change host, appId and wenIntegrationId if you are using a cloud tenant, in the src -> app -> globals.ts
+
 ## Development server
 
 Run `npm run start` or `yarn start` for a dev server. The app will automatically reload if you change any of the source files.
