@@ -11,6 +11,7 @@ import mekkoChart from '@nebula.js/sn-mekko-chart'
 const config = {
   host: 'sense-demo.qlik.com',
   appId: '133dab5d-8f56-4d40-b3e0-a6b401391bde',
+  webIntegrationId: null,
 };
 
 const n = embed.createConfiguration({
@@ -51,11 +52,37 @@ const n = embed.createConfiguration({
   ],
 });
 
+async function getQCSHeaders() {
+  const { host, webIntegrationId } = config;
+  const response = await fetch(`https://${host}/api/v1/csrf-token`, {
+    credentials: 'include',
+    headers: { 'qlik-web-integration-id': webIntegrationId },
+  });
+  if (response.status === 401) {
+    const loginUrl = new URL(`https://${host}/login`);
+    loginUrl.searchParams.append('returnto', window.location.href);
+    loginUrl.searchParams.append('qlik-web-integration-id', webIntegrationId);
+    window.location.href = String(loginUrl);
+    return undefined;
+  }
+  const csrfToken = response.headers.get('qlik-csrf-token');
+  return {
+    'qlik-web-integration-id': webIntegrationId,
+    'qlik-csrf-token': csrfToken,
+  };
+}
 const connect = async () => {
+  const { host, appId, webIntegrationId } = config;
+  let url = `wss://${host}/app/${appId}`
+  if (webIntegrationId) {
+    const headers = await getQCSHeaders();
+    url = `${url}?qlik-web-integration-id=${webIntegrationId}&qlik-csrf-token=${headers['qlik-csrf-token']}`
+  }
+  console.log(url)
   const enigmaGlobal = await enigma
     .create({
       schema,
-      url: `wss://${config.host}/app/${config.appId}`,
+      url,
     })
     .open();
 
